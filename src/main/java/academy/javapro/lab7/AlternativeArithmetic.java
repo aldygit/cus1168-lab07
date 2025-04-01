@@ -1,66 +1,47 @@
 package academy.javapro.lab7;
 
 public class AlternativeArithmetic {
-    /**
-     * Adds two integers without using the '+' operator
-     * Uses bitwise operations:
-     * 1. XOR (^) to add bits without considering carry
-     * 2. AND (&) with left shift to calculate carry
-     * 3. Repeats until there's no carry left
-     */
     public static int addWithoutPlus(int a, int b) {
-        // Base case: if one of the numbers is 0, return the other
-        // TODO: return a if b is 0
-        // TODO: return b if a is 0
-
-        // TODO:Create a while loop that runs until b is 0. This loop will calculate the sum of a and b
-            // TODO: create a variable carry and assign it the result of the bitwise AND operation between a and b
-            // TODO: assign the result of the bitwise XOR operation between a and b to a
-            // TODO: assign the result of the left shift operation on carry by 1 to b
-        // TODO return a because it contains the sum of a and b
-        throw new UnsupportedOperationException("Not implemented yet");
+        while (b != 0) {
+            int carry = a & b;
+            a = a ^ b;
+            b = carry << 1;
+        }
+        return a;
     }
 
-    /**
-     * Divides two integers without using the '/' operator
-     * Uses a binary approach by finding how many times the divisor
-     * fits into the dividend by repeated subtraction, but optimized
-     * to use bit shifting for better performance
-     */
     public static int divideWithoutDivideOperator(int dividend, int divisor) {
-        // Handle edge cases
-        // TODO: throw an ArithmeticException if divisor is 0
-        // TODO: return 0 if dividend is 0
-        // TODO: return dividend if divisor is 1
+        if (divisor == 0) {
+            throw new ArithmeticException("Division by zero is not allowed");
+        }
+        if (dividend == 0) {
+            return 0;
+        }
+        if (divisor == 1) {
+            return dividend;
+        }
 
-        // TODO: create a boolean variable isNegative and assign it the result of the XOR operation between dividend and divisor
+        boolean isNegative = (dividend < 0) ^ (divisor < 0);
+        
+        long absDividend = Math.abs((long) dividend);
+        long absDivisor = Math.abs((long) divisor);
+        
+        int result = 0;
+        while (absDividend >= absDivisor) {
+            long temp = absDivisor, multiple = 1;
+            while (absDividend >= (temp << 1)) {
+                temp <<= 1;
+                multiple <<= 1;
+            }
+            absDividend -= temp;
+            result += multiple;
+        }
 
-        // Convert to positive for the algorithm
-        // TODO: create a long variable absDividend and assign it the absolute value of dividend
-        // TODO: create a long variable absDivisor and assign it the absolute value of divisor
-
-        // Use a binary approach for division
-        // TODO: create an int variable result and assign it 0
-        // TODO: while absDividend is greater than or equal to absDivisor
-            // TODO: create a long variable temp and assign it the value of absDivisor
-            // TODO: create a long variable multiple and assign it 1
-            // TODO: while absDividend is greater than or equal to temp shifted left by 1
-                // TODO: shift temp left by 1
-                // TODO: shift multiple left by 1
-            // TODO: subtract temp from absDividend
-            // TODO: add multiple to result using the += operator
-
-        // TODO: return the result if isNegative is false
-        throw new UnsupportedOperationException("Not implemented yet");
+        return isNegative ? -result : result;
     }
 
-    /**
-     * BONUS: Subtract without using the '-' operator
-     * Uses the property that a - b = a + (-b)
-     */
     public static int subtractWithoutMinusOperator(int a, int b) {
-        // Negate b and add to a
-        return addWithoutPlus(a, ~b + 1); // ~b + 1 is the two's complement of b (equivalent to -b)
+        return addWithoutPlus(a, ~b + 1);
     }
 
     /**
